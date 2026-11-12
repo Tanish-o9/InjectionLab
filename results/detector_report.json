@@ -1,0 +1,19 @@
+{
+  "precision": 0.992,
+  "recall": 1.0,
+  "f1": 0.996,
+  "average_precision": 1.0,
+  "threshold": 0.5,
+  "n_attacks": 368,
+  "n_benign": 48,
+  "recall_by_mutation": {
+    "none": 1.0,
+    "polite": 1.0,
+    "roleplay": 1.0,
+    "hinglish": 1.0,
+    "html_comment": 1.0,
+    "end_of_doc": 1.0,
+    "base64": 1.0,
+    "markdown_hidden": 1.0
+  }
+}
