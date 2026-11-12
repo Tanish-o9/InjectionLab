@@ -57,6 +57,8 @@ streamlit run demo.py
 python cli.py demo
 ```
 
+![InjectionLab Playground Preview](assets/playground_preview.png)
+
 ## Unified CLI
 
 InjectionLab provides a unified CLI for scanning, adversarial red-teaming, testing, and report generation:
