@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/Tanish-o9/InjectionLab/actions/workflows/ci.yml/badge.svg)](https://github.com/Tanish-o9/InjectionLab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Author: Tanish-o9](https://img.shields.io/badge/Author-Tanish--o9-181717?style=flat&logo=github)](https://github.com/Tanish-o9)
 
 Attack your own tool-using RAG app, add defenses, and measure which defenses really work
 (attack success rate vs utility). Everything is sandboxed: fake secret, fake tools, `.test` domains.
@@ -95,3 +96,7 @@ Utility has only 32 tasks, so its intervals are wide: treat small differences as
 
 ## Resume line
 Built a prompt-injection red-team benchmark for a tool-using RAG agent (368 attacks, 8 defense configs, bootstrap CIs); layered defenses cut attack success from 70.9% to 0.0% (prompt+filter cuts to 4.3% with zero utility cost).
+
+## Author & Maintainer
+Created and maintained by **Tanish Kumar** ([GitHub: @Tanish-o9](https://github.com/Tanish-o9)).
+Feedback, issues, and contributions are welcome!
