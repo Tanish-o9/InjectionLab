@@ -44,3 +44,4 @@ jobs:
     - name: Run benchmark smoke test
       run: |
         python run_experiment.py --model mock:weak --trials 1 --max-attacks 20
+

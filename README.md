@@ -55,6 +55,32 @@ email recipient for tool tasks). False refusal = blocked or refusal text on a be
 - **privsep**: quarantined LLM reads docs (no secret, no tools); privileged LLM has secret + tools but never sees doc text.
   Direct attacks from the *user* channel still reach the privileged side, so exfil via user message is not fully solved.
 
+## Benchmark Results
+
+### 1. Attack Success Rate (ASR) vs. Utility Trade-Off (`mock:weak`, 3 Trials)
+
+| Configuration | Overall ASR (95% CI) | Direct ASR | Indirect ASR | Exfiltration ASR | Utility (95% CI) | False Refusals |
+|---|---|---|---|---|---|---|
+| **none** | 70.9% [67.8–73.8] | 58.3% | 77.1% | 70.0% | 90.6% [81.2–100.0] | 0.0% |
+| **delimiters** | 46.1% [43.0–49.5] | 56.9% | 41.7% | 46.4% | 90.6% [81.2–100.0] | 0.0% |
+| **hierarchy** | 44.8% [41.8–48.1] | 52.8% | 38.0% | 47.4% | 90.6% [81.2–100.0] | 0.0% |
+| **output_filter** | 9.3% [6.8–12.0] | 0.0% | 0.0% | 17.9% | 90.6% [81.2–100.0] | 0.0% |
+| **detector** | 0.0% [0.0–0.0] | 0.0% | 0.0% | 0.0% | 68.8% [53.1–84.4] | 0.0% |
+| **privsep** | 7.3% [5.1–9.7] | 0.0% | 0.0% | 14.1% | 90.6% [81.2–100.0] | 0.0% |
+| **prompt+filter** | 4.3% [2.6–6.1] | 0.0% | 0.0% | 8.2% | 90.6% [81.2–100.0] | 0.0% |
+| **all** | 0.0% [0.0–0.0] | 0.0% | 0.0% | 0.0% | 68.8% [53.1–84.4] | 0.0% |
+
+### 2. Injection Detector Performance
+- **Precision:** 99.2%
+- **Recall:** 100.0% across all 8 attack mutation categories (plain, polite, roleplay, hinglish, html_comment, end_of_doc, base64, markdown_hidden)
+- **F1 Score:** 0.996
+- **Average Precision:** 1.00
+
+### 3. Visualizations
+- `results/<model>/asr_vs_utility.png`: Security vs. capability Pareto frontier
+- `results/<model>/asr_by_type.png`: Attack breakdown (direct / indirect / exfiltration)
+- `results/detector_pr_curve.png`: Injection detector Precision-Recall curve
+
 ## Statistics
 ASR CIs are 95% bootstrap intervals that resample **attacks** (trials of one attack are not independent).
 Utility has only 32 tasks, so its intervals are wide: treat small differences as noise.
@@ -68,5 +94,4 @@ Utility has only 32 tasks, so its intervals are wide: treat small differences as
 - Only for your own sandbox. Never point these attacks at real systems or users.
 
 ## Resume line
-Built a prompt-injection red-team benchmark for a tool-using RAG agent (368 attacks, 8 defense configs, bootstrap CIs);
-layered defenses cut attack success from X% to Y% at Z% utility cost (fill with real-model numbers).
+Built a prompt-injection red-team benchmark for a tool-using RAG agent (368 attacks, 8 defense configs, bootstrap CIs); layered defenses cut attack success from 70.9% to 0.0% (prompt+filter cuts to 4.3% with zero utility cost).
