@@ -1,5 +1,8 @@
 # InjectionLab: LLM Red-Team + Prompt-Injection Defense Benchmark
 
+[![CI](https://github.com/Tanish-o9/InjectionLab/actions/workflows/ci.yml/badge.svg)](https://github.com/Tanish-o9/InjectionLab/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Attack your own tool-using RAG app, add defenses, and measure which defenses really work
 (attack success rate vs utility). Everything is sandboxed: fake secret, fake tools, `.test` domains.
 
