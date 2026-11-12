@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 import config
 from defenses.output_filter import canary_in_text
+from defenses.sanitizer import sanitize_text
 from target import prompts
 from target.tools import ToolBox, parse_tool_calls
 
@@ -30,6 +31,11 @@ class TargetApp:
             else:
                 docs = docs[:-1] + [(carrier, self.ret.docs[carrier] + "\n" + poison)]
         flags = []
+        if "sanitizer" in self.D:
+            query = sanitize_text(query)
+            docs = [(i, sanitize_text(t)) for i, t in docs]
+            flags.append("sanitizer")
+
         if "detector" in self.D:
             if self.det.is_injection(query):
                 return Result("[blocked by detector]", [], True, ["detector:query"])

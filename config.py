@@ -15,7 +15,7 @@ DETECTOR_THRESHOLD = 0.5   # injection-classifier decision threshold
 TEMPERATURE = 0.7          # for real LLMs (mock ignores it)
 SEED = 7
 
-ALL_DEFENSES = ["delimiters", "hierarchy", "output_filter", "detector", "privsep"]
+ALL_DEFENSES = ["delimiters", "hierarchy", "output_filter", "detector", "privsep", "sanitizer"]
 
 # name -> list of enabled defenses. Edit freely.
 DEFENSE_CONFIGS = {
@@ -25,6 +25,7 @@ DEFENSE_CONFIGS = {
     "output_filter": ["output_filter"],
     "detector": ["detector"],
     "privsep": ["privsep"],
+    "sanitizer": ["sanitizer"],
     "prompt+filter": ["delimiters", "hierarchy", "output_filter"],
     "all": ALL_DEFENSES,
 }
