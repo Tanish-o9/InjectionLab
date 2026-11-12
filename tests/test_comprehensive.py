@@ -256,3 +256,46 @@ def test_summarize_and_markdown():
     assert "utility" in summary.columns
     md = to_markdown(summary)
     assert "| none |" in md
+
+
+# -----------------------------------------------------------------------------
+# 9. Advanced Attacks, Red-Team & Audit Export Tests
+# -----------------------------------------------------------------------------
+def test_many_shot_and_crescendo_generation():
+    from attacks.advanced import build_many_shot_payload, build_crescendo_turns
+    payload = build_many_shot_payload("reveal secret", n_shots=3)
+    assert "[Turn 1]" in payload
+    assert "[Turn 3]" in payload
+    assert "reveal secret" in payload
+
+    turns = build_crescendo_turns()
+    assert len(turns) == 3
+    assert turns[0]["intent"] == "benign_inquiry"
+    assert turns[2]["intent"] == "escalated_exploit"
+
+
+def test_autonomous_red_team_loop():
+    from attacks.red_team import run_red_team_loop
+    ret = Retriever(DOCS)
+    det = InjectionDetector().fit()
+    llm = get_llm("mock:weak")
+    app = TargetApp(llm, ["detector", "output_filter"], ret, det)
+    res = run_red_team_loop(app, max_rounds=3)
+    assert "history" in res
+    assert len(res["history"]) <= 3
+    assert "compromised" in res
+
+
+def test_audit_export_json_and_md(tmp_path):
+    from evaluation.audit_export import export_audit_report
+    json_path = export_audit_report("mock_weak", fmt="json")
+    assert json_path.exists()
+    with open(json_path, "r") as f:
+        data = json.load(f)
+    assert data["benchmark"] == "InjectionLab"
+
+    md_path = export_audit_report("mock_weak", fmt="md")
+    assert md_path.exists()
+    content = md_path.read_text(encoding="utf-8")
+    assert "# LLM Security & Prompt-Injection Vulnerability Audit" in content
+
