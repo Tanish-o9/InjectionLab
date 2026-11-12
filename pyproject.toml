@@ -29,7 +29,11 @@ dependencies = [
     "requests",
     "tqdm",
     "pytest",
+    "streamlit>=1.30.0",
 ]
+
+[project.scripts]
+injectionlab = "cli:main"
 
 [project.optional-dependencies]
 hf = [
