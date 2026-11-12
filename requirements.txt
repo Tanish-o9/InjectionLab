@@ -6,4 +6,5 @@ joblib
 requests
 tqdm
 pytest
+streamlit
 datasets  # optional, only for --use-hf
