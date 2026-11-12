@@ -1,0 +1,9 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+joblib
+requests
+tqdm
+pytest
+datasets  # optional, only for --use-hf

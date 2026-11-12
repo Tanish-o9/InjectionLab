@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "injectionlab"
+version = "0.1.0"
+description = "InjectionLab: LLM Red-Team and Prompt-Injection Defense Benchmark"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "InjectionLab Team"}
+]
+keywords = [
+    "prompt-injection",
+    "red-teaming",
+    "security",
+    "llm",
+    "benchmark",
+    "rag"
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "matplotlib",
+    "joblib",
+    "requests",
+    "tqdm",
+    "pytest",
+]
+
+[project.optional-dependencies]
+hf = [
+    "datasets",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
