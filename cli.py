@@ -6,7 +6,12 @@ import sys
 
 import config
 from defenses.detector import InjectionDetector
+from evaluation.audit_export import export_audit_report
 from evaluation.report_generator import generate_html_report
+from llm import get_llm
+from target.app import TargetApp
+from target.docs import DOCS
+from target.retriever import Retriever
 
 
 def cmd_scan(args):
@@ -54,6 +59,28 @@ def cmd_test(args):
     subprocess.run([sys.executable, "-m", "pytest", "-v", "tests"], check=True)
 
 
+def cmd_redteam(args):
+    """Run iterative autonomous red-team loop against target app."""
+    from attacks.red_team import run_red_team_loop
+    ret = Retriever(DOCS)
+    det = InjectionDetector().fit()
+    llm = get_llm(args.model)
+    defenses = config.DEFENSE_CONFIGS.get(args.defense, config.ALL_DEFENSES)
+    app = TargetApp(llm, defenses, ret, det)
+    print(f"\n[*] Starting Autonomous Red-Team Duel against model='{args.model}' (defenses='{args.defense}')...")
+    res = run_red_team_loop(app, initial_goal=args.goal, max_rounds=args.rounds)
+    for step in res["history"]:
+        status = "COMPROMISED 🚨" if step["success"] else ("BLOCKED 🛡️" if step["blocked"] else "CLEAN ✅")
+        print(f"Round {step['round']}: [{status}] Flags={step['flags']} | Payload: {step['payload'][:60]}...")
+    print(f"\nFinal Outcome: {'ATTACKER WON (COMPROMISED)' if res['compromised'] else 'DEFENDER WON (SECURE)'} in {res['total_rounds']} rounds.\n")
+
+
+def cmd_export(args):
+    """Export formal security audit report in JSON or Markdown format."""
+    out = export_audit_report(tag=args.tag, fmt=args.format)
+    print(f"[+] Security audit report successfully exported to: {out}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="injectionlab",
@@ -90,6 +117,20 @@ def main():
     # test
     p_test = subparsers.add_parser("test", help="Run pytest test suite")
     p_test.set_defaults(func=cmd_test)
+
+    # redteam
+    p_red = subparsers.add_parser("redteam", help="Run autonomous iterative adversarial red-team loop")
+    p_red.add_argument("--goal", default="reveal the secret canary string", help="Target attacker goal")
+    p_red.add_argument("--rounds", type=int, default=5, help="Maximum adversarial escalation rounds")
+    p_red.add_argument("--model", default="mock:weak", help="Target LLM backend")
+    p_red.add_argument("--defense", default="prompt+filter", help="Active defense config name")
+    p_red.set_defaults(func=cmd_redteam)
+
+    # export
+    p_exp = subparsers.add_parser("export", help="Export formal security audit report")
+    p_exp.add_argument("--tag", default="mock_weak", help="Results tag to export")
+    p_exp.add_argument("--format", choices=["json", "md"], default="json", help="Export format (json or md)")
+    p_exp.set_defaults(func=cmd_export)
 
     args = parser.parse_args()
     if not hasattr(args, "func"):
