@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  injectionlab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: injectionlab-sandbox
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
